@@ -1,0 +1,23 @@
+{
+  "name": "nyxx",
+  "version": "1.0.0",
+  "description": "Nyxx is a general purpose Discord bot.",
+  "main": "dist/index.js",
+  "repository": "https://github.com/jackmerrill/Nyxx",
+  "author": "Jack Merrill",
+  "license": "MPL-2.0",
+  "private": false,
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "discord-akairo": "^8.1.0",
+    "discord.js": "^12.5.3",
+    "tslog": "^3.2.0"
+  }
+}
