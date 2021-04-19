@@ -7,7 +7,12 @@
   "author": "Jack Merrill",
   "license": "MPL-2.0",
   "private": false,
+  "scripts": {
+    "start": "tsc && node dist/src/index.js",
+    "dev": "ts-node src/index.ts"
+  },
   "devDependencies": {
+    "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.24.0",
@@ -18,6 +23,8 @@
   "dependencies": {
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
+    "dotenv": "^8.2.0",
+    "kurasuta": "^2.2.3",
     "tslog": "^3.2.0"
   }
 }

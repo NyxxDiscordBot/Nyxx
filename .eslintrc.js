@@ -16,5 +16,8 @@ module.exports = {
   ],
   rules: {
     indent: ['error', 2],
+    'import/no-unresolved': 'off',
+    'import/extensions': 'off',
+    'class-methods-use-this': 'off',
   },
 };
