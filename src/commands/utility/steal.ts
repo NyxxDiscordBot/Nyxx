@@ -10,9 +10,9 @@ class StealCommand extends Command {
       aliases: ['steal', 'takeemoji', 'stealemoji'],
       description: {
         content: 'Steals an emoji from another server, and adds it to yours!',
-        usage: '[emoji, (emoji 2, emoji 3, ...)]',
+        usage: '[emoji]',
       },
-      category: 'bot',
+      category: 'utility',
       ratelimit: 2,
       args: [
         {

@@ -1,4 +1,5 @@
 import { BaseCluster, ShardingManager } from 'kurasuta';
+import { connect } from 'mongoose';
 import NyxxClient from './NyxxClient';
 import Log from './NyxxLogger';
 
@@ -29,7 +30,12 @@ export class NyxxCluster extends BaseCluster {
 
     this.logger.info('Logging in...');
 
-    this.client.login(process.env.BOT_TOKEN).then(() => {
+    await connect(process.env.DATABASE_URL as string, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    this.client.login(process.env.BOT_TOKEN as string).then(() => {
       this.logger.info('Client Logged in!');
     }).catch((err) => {
       this.logger.fatal('Failed to log in', err);

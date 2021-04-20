@@ -3,11 +3,13 @@ import {
   CommandHandler,
   InhibitorHandler,
   ListenerHandler,
+  MongooseProvider,
 } from 'discord-akairo';
 import { join } from 'path';
-import { ClientOptions } from 'discord.js';
+import { ClientOptions, Message } from 'discord.js';
 import { Logger } from 'tslog';
 import { NyxxCluster } from './NyxxCluster';
+import SettingsModel from '../models/Settings.model';
 
 class NyxxClient extends AkairoClient {
   commandHandler: CommandHandler;
@@ -19,6 +21,8 @@ class NyxxClient extends AkairoClient {
   cluster?: NyxxCluster;
 
   logger: Logger;
+
+  settings: MongooseProvider;
 
   constructor(clientOptions: ClientOptions) {
     super({
@@ -40,9 +44,16 @@ class NyxxClient extends AkairoClient {
       this.logger = this.cluster.logger;
     }
 
+    this.settings = new MongooseProvider(SettingsModel);
+
     this.commandHandler = new CommandHandler(this, {
       directory: join(__dirname, '..', 'commands'),
-      prefix: 'n!', // todo: add database lol
+      prefix: async (message: Message) => {
+        if (message.guild) {
+          return this.settings.get(message.guild.id, 'prefix', 'n!');
+        }
+        return 'n!';
+      },
       allowMention: true,
     });
 
@@ -77,7 +88,18 @@ class NyxxClient extends AkairoClient {
     this.inhibitorHandler.loadAll();
     this.logger.info('Loaded Inhibitors!');
 
+    this.logger.info('Loading Database...');
+    await this.settings.init();
+    this.logger.info('Loaded Database!');
+
     return this;
+  }
+
+  async login(token: string) {
+    this.logger.info('Loading Database...');
+    await this.settings.init();
+    this.logger.info('Loaded Database!');
+    return super.login(token);
   }
 }
 
