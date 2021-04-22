@@ -8,6 +8,7 @@ import {
 import { join } from 'path';
 import { ClientOptions, Message } from 'discord.js';
 import { Logger } from 'tslog';
+import 'discord-buttons';
 import { NyxxCluster } from './NyxxCluster';
 import SettingsModel from '../models/Settings.model';
 import AnalyticsModel from '../models/Analytics.model';
