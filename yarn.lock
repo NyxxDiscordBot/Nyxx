@@ -476,6 +476,13 @@ discord-akairo@^8.1.0:
   resolved "https://registry.yarnpkg.com/discord-akairo/-/discord-akairo-8.1.0.tgz#9f3d910e12c197d40d3522a3a93679e2a746a6ca"
   integrity sha512-INWYmHo6NgyYx1ZKGSCmgznVfvkXpWGj4fGCGjO8IPkZ06Bidb9YKr4rXy2lwG0kprCjvqY0qbbhcw6N050abQ==
 
+discord-buttons@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/discord-buttons/-/discord-buttons-1.0.2.tgz#84378c1faee368218a7ce2cf8df3f203942c0c9f"
+  integrity sha512-5iU+jrYn4/CXwZnzZnxsMHM3U+/gzXQstd2ZIwBhqSdwcVtyMDiNWaAsAMO6tXTQGEYHf3rEcoB18Gf1A+bqqQ==
+  dependencies:
+    discord.js "^12.5.3"
+
 discord.js@^12.5.1, discord.js@^12.5.3:
   version "12.5.3"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.5.3.tgz#56820d473c24320871df9ea0bbc6b462f21cf85c"

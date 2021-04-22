@@ -10,6 +10,8 @@ import { ClientOptions, Message } from 'discord.js';
 import { Logger } from 'tslog';
 import { NyxxCluster } from './NyxxCluster';
 import SettingsModel from '../models/Settings.model';
+import AnalyticsModel from '../models/Analytics.model';
+import NyxxAnalytics from './NyxxAnalytics';
 
 class NyxxClient extends AkairoClient {
   commandHandler: CommandHandler;
@@ -23,6 +25,8 @@ class NyxxClient extends AkairoClient {
   logger: Logger;
 
   settings: MongooseProvider;
+
+  analytics: NyxxAnalytics;
 
   constructor(clientOptions: ClientOptions) {
     super({
@@ -45,6 +49,8 @@ class NyxxClient extends AkairoClient {
     }
 
     this.settings = new MongooseProvider(SettingsModel);
+
+    this.analytics = new NyxxAnalytics(AnalyticsModel);
 
     this.commandHandler = new CommandHandler(this, {
       directory: join(__dirname, '..', 'commands'),
