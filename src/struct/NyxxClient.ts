@@ -1,24 +1,29 @@
 import {
   AkairoClient,
-  CommandHandler,
+  AkairoOptions,
   InhibitorHandler,
   ListenerHandler,
   MongooseProvider,
 } from 'discord-akairo';
 import { join } from 'path';
-import { ClientOptions, Message } from 'discord.js';
+import { ClientOptions, Intents, Message } from 'discord.js';
 import { Logger } from 'tslog';
 import { NyxxCluster } from './NyxxCluster';
 import SettingsModel from '../models/Settings.model';
 import AnalyticsModel from '../models/Analytics.model';
 import NyxxAnalytics from './NyxxAnalytics';
+import NyxxCommandHandler from './NyxxCommandHandler';
+import SlashHandler from './SlashHandler';
+import Command from './SlashCommand';
 
 class NyxxClient extends AkairoClient {
-  commandHandler: CommandHandler;
+  commandHandler: NyxxCommandHandler;
 
   listenerHandler: ListenerHandler;
 
   inhibitorHandler: InhibitorHandler;
+
+  slashHandler: SlashHandler;
 
   cluster?: NyxxCluster;
 
@@ -28,10 +33,36 @@ class NyxxClient extends AkairoClient {
 
   analytics: NyxxAnalytics;
 
-  constructor(clientOptions: ClientOptions) {
+  constructor(clientOptions: AkairoOptions & ClientOptions) {
     super({
       ownerID: ['401792058970603539', '162305223589756928'],
+      intents: new Intents(Intents.ALL),
+      presence: {
+        activities: [
+          {
+            type: 'WATCHING',
+            name: 'for n!help',
+          },
+          {
+            type: 'LISTENING',
+            name: 'nothing :(',
+          },
+          {
+            type: 'PLAYING',
+            name: 'https://domain.tld',
+          },
+        ],
+      },
     }, {
+      // @ts-ignore
+      intents: [
+        'GUILDS',
+        'GUILD_MESSAGES',
+        'GUILD_MEMBERS',
+        'GUILD_BANS',
+        'GUILD_EMOJIS',
+        'GUILD_INTEGRATIONS',
+      ],
       ws: {
         properties: {
           $browser: 'Discord iOS',
@@ -52,7 +83,7 @@ class NyxxClient extends AkairoClient {
 
     this.analytics = new NyxxAnalytics(AnalyticsModel);
 
-    this.commandHandler = new CommandHandler(this, {
+    this.commandHandler = new NyxxCommandHandler(this, {
       directory: join(__dirname, '..', 'commands'),
       prefix: async (message: Message) => {
         if (message.guild) {
@@ -70,6 +101,11 @@ class NyxxClient extends AkairoClient {
     this.listenerHandler = new ListenerHandler(this, {
       directory: join(__dirname, '..', 'listeners'),
     });
+
+    this.slashHandler = new SlashHandler(this, {
+      directory: join(__dirname, '..', 'slash'),
+      classToHandle: Command,
+    });
   }
 
   async init(): Promise<this> {
@@ -80,6 +116,7 @@ class NyxxClient extends AkairoClient {
       commandHandler: this.commandHandler,
       inhibitorHandler: this.inhibitorHandler,
       listenerHandler: this.listenerHandler,
+      gateway: this.ws,
     });
 
     this.logger.info('Loading Commands...');
@@ -97,6 +134,12 @@ class NyxxClient extends AkairoClient {
     this.logger.info('Loading Database...');
     await this.settings.init();
     this.logger.info('Loaded Database!');
+
+    this.logger.info('Loading Slash Commands...');
+
+    this.slashHandler.loadAll();
+
+    this.logger.info('Loaded Slash Commands!');
 
     return this;
   }

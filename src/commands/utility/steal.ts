@@ -1,10 +1,9 @@
-import { Command } from 'discord-akairo';
 import { Emoji, Message } from 'discord.js';
 import { NyxxEmojis, NyxxColors } from '../../../lib/Constants';
-import NyxxClient from '../../struct/NyxxClient';
+import NyxxCommand from '../../struct/NyxxCommand';
 import NyxxEmbed from '../../struct/NyxxEmbed';
 
-class StealCommand extends Command {
+class StealCommand extends NyxxCommand {
   constructor() {
     super('steal', {
       aliases: ['steal', 'takeemoji', 'stealemoji'],
@@ -39,7 +38,44 @@ class StealCommand extends Command {
   }
 
   async exec(msg: Message, { emoji }: { emoji: Emoji }) {
-    const embed = new NyxxEmbed(msg, this.client as NyxxClient);
+    const embed = new NyxxEmbed(this.client, msg);
+
+    if (msg.reference?.messageID) {
+      const reply = await msg.channel.messages.fetch(msg.reference.messageID);
+      const hasEmoji = /<a?:.+?:\d+>/g.test(reply.content);
+      if (hasEmoji) {
+        const phrase = reply.content.match(/<a?:.+?:\d+>/g)?.shift();
+
+        const emojiObject = phrase?.substring(1, phrase.length - 1) as string;
+
+        const emojiData = emojiObject.split(':');
+
+        const e = {
+          name: emojiData[1],
+          animated: (emojiData[0] === 'a'),
+          url: `https://cdn.discordapp.com/emojis/${emojiData[2]}`,
+          id: emojiData[2],
+        };
+
+        embed.setTitle(`Stealing Emoji... ${NyxxEmojis.LOADING}`);
+        embed.setColor(NyxxColors.WARN);
+        const m = await msg.channel.send(embed);
+        let stolenEmoji: Emoji | undefined;
+        try {
+          stolenEmoji = await msg.guild?.emojis.create(e.url as string, e.name, { reason: 'Stolen Command Ran' });
+        } catch (err) {
+          embed.setTitle('Failed!');
+          embed.setDescription('Emoji failed to steal.');
+          embed.addField('Error', `\`${err}\``);
+          embed.setColor(NyxxColors.ERROR);
+          return m.edit(embed);
+        }
+        embed.setTitle('Stolen!');
+        embed.setDescription(`Emoji ${stolenEmoji} stolen with name ${stolenEmoji?.name}`);
+        embed.setColor(NyxxColors.SUCCESS);
+        return m.edit(embed);
+      }
+    }
 
     if (!emoji) {
       embed.setTitle('No Emoji Provided!');
@@ -57,12 +93,12 @@ class StealCommand extends Command {
       embed.setTitle('Failed!');
       embed.setDescription('Emoji failed to steal.');
       embed.addField('Error', `\`${e}\``);
-      embed.setColor(NyxxColors.SUCCESS);
+      embed.setColor(NyxxColors.ERROR);
       return m.edit(embed);
     }
     embed.setTitle('Stolen!');
     embed.setDescription(`Emoji ${stolenEmoji} stolen with name ${stolenEmoji?.name}`);
-    embed.setColor(NyxxColors.ERROR);
+    embed.setColor(NyxxColors.SUCCESS);
     return m.edit(embed);
   }
 }

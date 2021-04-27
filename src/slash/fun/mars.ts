@@ -1,29 +1,25 @@
 /* eslint-disable camelcase */
-import { Message } from 'discord.js';
-import { NyxxColors, NyxxEmojis } from '../../../lib/Constants';
-import NyxxCommand from '../../struct/NyxxCommand';
+import { CommandInteraction } from 'discord.js';
+import { NyxxEmojis, NyxxColors } from '../../../lib/Constants';
 import NyxxEmbed from '../../struct/NyxxEmbed';
 import NyxxFetch from '../../struct/NyxxFetch';
+import Command from '../../struct/SlashCommand';
 
-class MarsCommand extends NyxxCommand {
+export default class SlashMarsCommand extends Command {
   constructor() {
     super('mars', {
-      aliases: ['mars', 'marsinfo'],
-      description: {
-        content: 'Get information from the Mars 2020 Perserverance rover!',
-      },
-      slashCommand: true,
-      category: 'fun',
+      name: 'mars',
+      description: 'Get information from the Mars 2020 Perserverance rover!',
     });
   }
 
-  async exec(msg: Message) {
-    const embed = new NyxxEmbed(this.client, msg);
+  async exec(msg: CommandInteraction) {
+    const embed = new NyxxEmbed(this.client, undefined, msg.user);
     const fetcher = new NyxxFetch();
 
     embed.setTitle(`Fetching... ${NyxxEmojis.LOADING}`);
     embed.setColor(NyxxColors.WARN);
-    const m = await msg.channel.send(embed);
+    await msg.reply(embed);
 
     const weatherData = await fetcher.get<{
       sols: {
@@ -72,8 +68,6 @@ class MarsCommand extends NyxxCommand {
     embed.addField('🌤️ Latest Weather', `📆 **Sol:** ${weather.sol}\n🌡️ **High:** ${weather.max_temp}\n❄️ **Low:** ${weather.min_temp}\n🗜️ **Pressure:** ${weather.pressure}\n☀️ **Sunrise:** ${weather.sunrise}\n🌑 **Sunset:** ${weather.sunset}`);
     embed.setImage(randomRoverPicture.img_src);
     embed.setColor(NyxxColors.SUCCESS);
-    m.edit(embed);
+    msg.editReply(embed);
   }
 }
-
-export default MarsCommand;

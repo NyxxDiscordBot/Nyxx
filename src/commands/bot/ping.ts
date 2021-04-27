@@ -1,20 +1,22 @@
-import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 import { NyxxColors, NyxxEmojis } from '../../../lib/Constants';
-import NyxxClient from '../../struct/NyxxClient';
+import NyxxCommand from '../../struct/NyxxCommand';
 import NyxxEmbed from '../../struct/NyxxEmbed';
 
-class PingCommand extends Command {
+class PingCommand extends NyxxCommand {
   constructor() {
     super('ping', {
       aliases: ['ping'],
-      description: 'Gets the websocket and API ping!',
+      description: {
+        content: 'Gets the websocket and API ping!',
+      },
+      slashCommand: true,
       category: 'bot',
     });
   }
 
   async exec(msg: Message) {
-    const embed = new NyxxEmbed(msg, this.client as NyxxClient);
+    const embed = new NyxxEmbed(this.client, msg);
 
     embed.setTitle(`Pinging... ${NyxxEmojis.LOADING}`);
     embed.setColor(NyxxColors.WARN);

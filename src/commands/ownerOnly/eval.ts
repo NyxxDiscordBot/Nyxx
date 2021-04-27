@@ -1,14 +1,15 @@
-import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
 import { NyxxColors, NyxxEmojis } from '../../../lib/Constants';
-import NyxxClient from '../../struct/NyxxClient';
+import NyxxCommand from '../../struct/NyxxCommand';
 import NyxxEmbed from '../../struct/NyxxEmbed';
 
-class EvalCommand extends Command {
+class EvalCommand extends NyxxCommand {
   constructor() {
     super('eval', {
       aliases: ['eval'],
-      description: 'Evaluate Javascript Code. Bot Owners Only.',
+      description: {
+        content: 'Evaluate Javascript Code. Bot Owners Only.',
+      },
       category: 'ownerOnly',
       args: [
         {
@@ -18,11 +19,12 @@ class EvalCommand extends Command {
         },
       ],
       ownerOnly: true,
+      slashCommand: true,
     });
   }
 
   async exec(msg: Message, { code }: { code: string }) {
-    const embed = new NyxxEmbed(msg, this.client as NyxxClient);
+    const embed = new NyxxEmbed(this.client, msg);
 
     embed.setTitle(`Evaluating Code... ${NyxxEmojis.LOADING}`);
     embed.setColor(NyxxColors.WARN);
