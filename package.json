@@ -23,8 +23,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "discord-akairo": "^8.1.0",
-    "discord-buttons": "^1.0.2",
-    "discord.js": "^12.5.3",
+    "discord.js": "github:vaporox/discord.js#feat-interactions",
     "dotenv": "^8.2.0",
     "kurasuta": "^2.2.3",
     "mongoose": "^5.12.5",

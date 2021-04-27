@@ -1,29 +1,31 @@
 import { Command } from 'discord-akairo';
 import { Message } from 'discord.js';
-import NyxxClient from '../../struct/NyxxClient';
+import NyxxCommand from '../../struct/NyxxCommand';
 import NyxxEmbed from '../../struct/NyxxEmbed';
 
-class HelpCommand extends Command {
+class HelpCommand extends NyxxCommand {
   constructor() {
     super('help', {
       aliases: ['help', 'commands', 'cmds'],
       description: {
-        content: 'Displays a list of available command, or detailed information for a specific command.',
+        content: 'Displays a list of available commands, or detailed information for a specific command.',
         usage: '[command]',
       },
       category: 'bot',
       ratelimit: 2,
+      slashCommand: true,
       args: [
         {
           id: 'command',
           type: 'commandAlias',
+          description: 'Command Name',
         },
       ],
     });
   }
 
   async exec(msg: Message, { command }: { command: Command }) {
-    const embed = new NyxxEmbed(msg, this.client as NyxxClient);
+    const embed = new NyxxEmbed(this.client, msg);
 
     if (!command) {
       embed.addField('❯  Commands', 'A list of available commands.\nFor additional info on a command, type `n!help <command>`');

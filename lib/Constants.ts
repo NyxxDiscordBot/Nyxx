@@ -30,3 +30,12 @@ export const NyxxStatuses: {
     text: 'https://domain.tld',
   },
 ];
+
+export const ApplicationCommandOptionType = {
+  string: 3,
+  number: 4,
+  commandAlias: 3,
+  user: 6,
+  channel: 7,
+  role: 8,
+}

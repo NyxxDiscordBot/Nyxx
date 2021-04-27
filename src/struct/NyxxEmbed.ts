@@ -1,13 +1,13 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, User } from 'discord.js';
 import { NyxxColors, Version } from '../../lib/Constants';
 import NyxxClient from './NyxxClient';
 
 class NyxxEmbed extends MessageEmbed {
-  constructor(message: Message, client: NyxxClient) {
+  constructor(client: NyxxClient, message?: Message, author?: User) {
     super({
       author: {
-        name: message.author.username,
-        iconURL: message.author.avatarURL() as string,
+        name: author?.username || message?.author.username,
+        iconURL: author?.avatarURL() || message?.author.avatarURL() as string,
       },
       color: NyxxColors.DEFAULT,
       footer: {

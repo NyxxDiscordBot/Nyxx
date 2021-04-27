@@ -26,7 +26,7 @@ Sharder.on(SharderEvents.DEBUG, (message: string) => {
   Log.debug(message);
 });
 
-Sharder.spawn().catch((err) => {
+Sharder.spawn().catch((err: Error) => {
   Log.fatal(err);
   throw err;
 });
